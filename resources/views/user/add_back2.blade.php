@@ -15,23 +15,15 @@
 
 <body>
 
-    <form action="{{ route('create_test') }}" method="POST">
-        @csrf
-        <label for="cars">User:</label>
-        <div class="form-group">
-            <label for="name">text</label>
-            <input type="text" class="form-control" id="text" name="test" aria-describedby="emailHelp"
-                placeholder="Name">
+    <form action="">
 
-        </div>
+        <label for="cars">User:</label>
 
         <select name="usersdw" id="usersdw">
-            <option>select a user</option>
             @foreach ($users as $user)
                 <option value="{{ $user->name }}">{{ $user->email }}</option>
             @endforeach
         </select>
-
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             add user
         </button>
@@ -41,10 +33,15 @@
         </button>
 
 
-        <button type="submit" class="btn btn-primary">
-            submit
-        </button>
 
+
+
+        <div class="form-group">
+            <label for="name">text</label>
+            <input type="text" class="form-control" id="text" name="test" aria-describedby="emailHelp"
+                placeholder="Name">
+
+        </div>
 
     </form>
 
@@ -59,7 +56,7 @@
     <!-- Button trigger modal -->
 
 
-    <!-- user Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -73,7 +70,7 @@
 
 
                 <div class="modal-body">
-                    <form action="{{ route('create') }}" method="POST" id="userForm">
+                    <form action="{{ route('create') }}" method="POST">
                         @csrf
 
                         <div class="form-group">
@@ -156,16 +153,14 @@
     <script>
         $(document).ready(function() {
             $("#user_create").click(function() {
-                var formData = $('#userForm').serialize();
                 $.ajax({
                     url: '/create',
                     method: 'POST',
-                    data: formData,
-                    // data: {
-                    //     _token: '<?php echo csrf_token(); ?>',
-                    //     name: $('#name').val(),
-                    //     email: $('#exampleInputEmail1').val(),
-                    // },
+                    data: {
+                        _token: '<?php echo csrf_token(); ?>',
+                        name: $('#name').val(),
+                        email: $('#exampleInputEmail1').val(),
+                    },
                     success: function(result) {
                         console.log(result);
                         $("#msg").html("User added successfully.");
@@ -174,13 +169,9 @@
                         $("#usersdw").append('<option value="' + result.user.name +
                             '" selected>' + result.user.email + '</option>');
 
-                        // Trigger the change event on the select dropdown to update the view modal
-                        $("#usersdw").change();
-
                         // Close the modal
                         $('#exampleModal').modal('hide');
                     },
-
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
                         $("#msg").html("Error adding user. Please try again.");
